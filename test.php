@@ -1,3 +1,4 @@
 <?php
-	echo 'test';exit;
+#statement	
+echo 'test';exit;
 ?>
