@@ -1,0 +1,19 @@
+<h1>homepage</h1>
+
+<p>
+<span>POST FORM</span><br/>
+<form method="post" action="/add">
+name:<input type="text" name="name" /><br/>
+email:<input type="text" name="email" /><br/>
+mobile:<input type="text" name="mobile" /><br/>
+<input type="submit" name="submit" value="try" />
+</form>
+</p>
+<%- userlist.length %>
+<% if(userlist){ %>
+	<ul>
+		<% for(var i=0;i<userlist.length;i++){ %>
+			<li><%= userlist[i] %></li>
+		<% } %>
+	</ul>
+<% } %>
