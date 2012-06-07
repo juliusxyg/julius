@@ -1,4 +1,5 @@
 var sqlite3 = require('sqlite3').verbose();
+var databasename = 'database.db';
 
 exports.index = function(req,res){
 	var tplParam = {htmltitle: 'layout title'};
@@ -10,7 +11,7 @@ exports.error = function(req,res){
 };
 
 exports.createTable = function(req,res){
-	var db = new sqlite3.Database('test.db');
+	var db = new sqlite3.Database(databasename);
 	db.serialize(function() {
 	  db.run("CREATE TABLE IF NOT EXISTS user (name TEXT, email TEXT, mobile INTEGER, dateline INTEGER)");
 	  res.send('ok! finished');
@@ -19,7 +20,7 @@ exports.createTable = function(req,res){
 };
 
 exports.addUser = function(req,res){
-	var db = new sqlite3.Database('test.db');
+	var db = new sqlite3.Database(databasename);
 	var name='',
 		email='',
 		mobile=0,
@@ -47,7 +48,7 @@ exports.addUser = function(req,res){
 };
 
 exports.listUser = function(req,res){
-	var db = new sqlite3.Database('test.db');
+	var db = new sqlite3.Database(databasename);
 	var list = new Array();
 	var tmp = '';
 	db.serialize(function() {

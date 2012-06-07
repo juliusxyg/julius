@@ -1,0 +1,8 @@
+<p>user number: <%- userlist.length %></p>
+<% if(userlist){ %>
+	<ul>
+		<% for(var i=0;i<userlist.length;i++){ %>
+			<li><%= userlist[i] %></li>
+		<% } %>
+	</ul>
+<% } %>
