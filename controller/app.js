@@ -21,6 +21,6 @@ app.listen(8081);
 
 io.sockets.on('connection', function (socket) {
   socket.on('mymessage',function(msg){
-  	io.sockets.emit('mymessage',msg)
+  	io.sockets.emit('mymessage',msg+'--add by server');
   });
 });
