@@ -1,0 +1,22 @@
+<p>
+	<ul id="content">
+	</ul>
+</p>
+<p>
+	<textarea id="message"></textarea>
+	<br/>
+	<button onclick="sendmsg();">send</button>
+</p>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+
+var socket = io.connect();
+	socket.on('mymessage', function (msg) {
+		document.getElementById('content').innerHTML += '<li>'+msg+'</li>';
+	});
+  
+  function sendmsg(){
+	socket.emit('mymessage', document.getElementById('message').value);
+}
+</script>

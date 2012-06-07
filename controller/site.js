@@ -63,3 +63,8 @@ exports.listUser = function(req,res){
 	db.close();
 }
 
+exports.chatIndex = function(req,res){
+	res.render('chat',{htmltitle: 'chat'});
+}
+
+
