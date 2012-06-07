@@ -1,7 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 
 exports.index = function(req,res){
-	var tplParam = {htmltitle: 'layout title',userlist:''};
+	var tplParam = {htmltitle: 'layout title'};
 	res.render('index',tplParam);
 };
 
@@ -40,7 +40,7 @@ exports.addUser = function(req,res){
 	  var stmt = db.prepare("INSERT INTO user VALUES (?,?,?,?)");
 	  stmt.run([name,email,mobile,dateline]);
 	  stmt.finalize();
-	  res.send('ok inserted');
+	  res.redirect('/list');
 	});
 
 	db.close();
@@ -56,8 +56,9 @@ exports.listUser = function(req,res){
 	      list.push(tmp);
 	  	},
 	  	function(){
-	  		res.render('index',{userlist: list, htmltitle: 'userlist'});
+	  		res.render('list',{userlist: list, htmltitle: 'userlist'});
 	  	});
 	});
 	db.close();
 }
+
