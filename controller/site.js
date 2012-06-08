@@ -53,8 +53,10 @@ exports.listUser = function(req,res){
 	var tmp = '';
 	db.serialize(function() {
 		db.each("SELECT rowid AS id, name, email, mobile, dateline FROM user", function(err, row) {
-	      tmp = row.id + ": " + unescape(row.name) + " - " + unescape(row.email) + " - " + unescape(row.mobile) + " - " + new Date(row.dateline);
-	      list.push(tmp);
+	      if(row){
+		      tmp = row.id + ": " + unescape(row.name) + " - " + unescape(row.email) + " - " + unescape(row.mobile) + " - " + new Date(row.dateline);
+		      list.push(tmp);
+	  		}
 	  	},
 	  	function(){
 	  		res.render('list',{userlist: list, htmltitle: 'userlist'});
@@ -63,8 +65,30 @@ exports.listUser = function(req,res){
 	db.close();
 }
 
-exports.chatIndex = function(req,res){
-	res.render('chat',{htmltitle: 'chat'});
+exports.loginIndex = function(req,res){
+	res.render('login',{htmltitle: 'login'});
 }
 
+exports.loginAction = function(req,res){
+	var db = new sqlite3.Database(databasename);
+	var name = '';
+	if(req.body.username){
+		name = escape(req.body.username);
+	}else{
+		res.redirect('/error');
+	}
+	db.serialize(function() {
+	  var stmt = db.prepare("SELECT rowid as id, name FROM user WHERE name=?");
+	  stmt.get(name,function(err, row){
+	  	if(row){
+	  		req.cookies.set('_USER_',row.name,{httpOnly: false});
+			res.render('chat',{htmltitle: 'chat'});
+	  	}else{
+	  		res.send('no user:' + name);
+	  	}
+	  });
+	  stmt.finalize();
+	});
+	db.close();
+}
 

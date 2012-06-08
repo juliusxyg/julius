@@ -17,6 +17,6 @@ var socket = io.connect();
 	});
   
   function sendmsg(){
-	socket.emit('mymessage', document.getElementById('message').value);
+	socket.emit('mymessage', {msg: document.getElementById('message').value, name: $.cookie('_USER_')});
 }
 </script>
