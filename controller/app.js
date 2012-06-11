@@ -23,10 +23,20 @@ app.post('/chat',site.loginAction);
 
 app.listen(8081);
 
+var users = {};
+
 io.sockets.on('connection', function (socket) {
   socket.on('mymessage',function(msg){
-  	if(msg.name){
-  		io.sockets.emit('mymessage',msg.name + ': ' + msg.msg+'--'+ new Date());
+  	if(msg){
+  		io.sockets.emit('mymessage',socket.username + ': ' + msg+'--'+ new Date());
   	}
+  });
+
+  socket.on('login',function(name){
+  	if(name){
+	  	socket.username = name;
+	  	users[name] = name;
+	  	io.sockets.emit('userlist',name);
+	}
   });
 });

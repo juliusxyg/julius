@@ -7,16 +7,26 @@
 	<br/>
 	<button onclick="sendmsg();">send</button>
 </p>
+<p>
+	<ul id="list">
+	</ul>
+</p>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
 
 var socket = io.connect();
-	socket.on('mymessage', function (msg) {
-		document.getElementById('content').innerHTML += '<li>'+msg+'</li>';
-	});
+socket.on('mymessage', function (msg) {
+	document.getElementById('content').innerHTML += '<li>'+msg+'</li>';
+});
+
+socket.on('userlist', function (name) {
+	document.getElementById('list').innerHTML += '<li>'+name+'</li>';
+});
+
+socket.emit('login', $.cookie('_USER_'));
   
-  function sendmsg(){
-	socket.emit('mymessage', {msg: document.getElementById('message').value, name: $.cookie('_USER_')});
+function sendmsg(){
+	socket.emit('mymessage', document.getElementById('message').value);
 }
 </script>
