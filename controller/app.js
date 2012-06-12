@@ -20,6 +20,7 @@ app.post('/add',site.addUser);
 app.get('/list',site.listUser);
 app.get('/login',site.loginIndex);
 app.post('/chat',site.loginAction);
+app.post('/img',site.uploadImg);
 
 app.listen(8081);
 
@@ -28,7 +29,14 @@ var users = {};
 io.sockets.on('connection', function (socket) {
   socket.on('mymessage',function(msg){
   	if(msg){
-  		io.sockets.emit('mymessage',socket.username + ': ' + msg+'--'+ new Date());
+  		var output = socket.username + ': ';
+  		if(msg.msg){
+  			output += msg.msg;
+  		}
+  		if(msg.pic){
+  			output += '<br/><img src="/upload/'+msg.pic+'" />';
+  		}
+  		io.sockets.emit('mymessage', output+'<br/>--'+ new Date());
   	}
   });
 

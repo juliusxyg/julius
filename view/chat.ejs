@@ -11,6 +11,12 @@
 	<ul id="list">
 	</ul>
 </p>
+<p>
+	<form action="/img" method="post" enctype="multipart/form-data" target="fileupload">
+		<input type="file" name="img" />
+		<input type="submit" name="submit" value="upload" />
+	</form>
+</p>
 <script src="/socket.io/socket.io.js"></script>
 <script>
 
@@ -27,6 +33,11 @@ socket.on('userlist', function (name) {
 socket.emit('login', $.cookie('_USER_'));
   
 function sendmsg(){
-	socket.emit('mymessage', document.getElementById('message').value);
+	socket.emit('mymessage', {msg:document.getElementById('message').value});
+}
+
+function myimg(src){
+	socket.emit('mymessage', {pic:src});
 }
 </script>
+<iframe name="fileupload" src=""></iframe>

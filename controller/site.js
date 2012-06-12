@@ -1,5 +1,6 @@
 var sqlite3 = require('sqlite3').verbose();
 var databasename = 'database.db';
+var fs = require('fs');
 
 exports.index = function(req,res){
 	var tplParam = {htmltitle: 'layout title'};
@@ -90,5 +91,17 @@ exports.loginAction = function(req,res){
 	  stmt.finalize();
 	});
 	db.close();
+}
+
+exports.uploadImg = function(req,res){
+	var tmp_path = req.files.img.path;
+	var target_path = './res/upload/'+escape(req.files.img.name);
+	fs.rename(tmp_path, target_path, function(err){
+		if(err){
+			console.log(err);
+			res.send('err');
+		}
+		res.send('<script>window.parent.myimg("'+escape(req.files.img.name)+'");</script>');
+	});
 }
 
