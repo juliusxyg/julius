@@ -73,8 +73,10 @@ exports.loginIndex = function(req,res){
 exports.loginAction = function(req,res){
 	var db = new sqlite3.Database(databasename);
 	var name = '';
-	if(req.body.username){
+	var room = '';
+	if(req.body.username && req.body.room){
 		name = escape(req.body.username);
+		room = escape(req.body.room);
 	}else{
 		res.redirect('/error');
 	}
@@ -83,6 +85,7 @@ exports.loginAction = function(req,res){
 	  stmt.get(name,function(err, row){
 	  	if(row){
 	  		req.cookies.set('_USER_',row.name,{httpOnly: false});
+	  		req.cookies.set('_ROOM_',room,{httpOnly: false});
 			res.render('chat',{htmltitle: 'chat'});
 	  	}else{
 	  		res.send('no user:' + name);

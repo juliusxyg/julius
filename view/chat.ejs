@@ -34,7 +34,7 @@ socket.on('userlist', function (name) {
 	$('#list').html(list);
 });
 
-socket.emit('login', $.cookie('_USER_'));
+socket.emit('login', {name:$.cookie('_USER_'),room:$.cookie('_ROOM_')});
   
 function sendmsg(){
 	socket.emit('mymessage', {msg:$('#message').val()});
