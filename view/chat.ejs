@@ -23,17 +23,21 @@
 
 var socket = io.connect();
 socket.on('mymessage', function (msg) {
-	document.getElementById('content').innerHTML += '<li>'+msg+'</li>';
+	$('#content').append('<li>'+msg+'</li>');
 });
 
 socket.on('userlist', function (name) {
-	document.getElementById('list').innerHTML += '<li>'+name+'</li>';
+	var list = '';
+	for(var i in name){
+		list += '<li>'+name[i]+'</li>';
+	}
+	$('#list').html(list);
 });
 
 socket.emit('login', $.cookie('_USER_'));
   
 function sendmsg(){
-	socket.emit('mymessage', {msg:document.getElementById('message').value});
+	socket.emit('mymessage', {msg:$('#message').val()});
 }
 
 function myimg(src){
