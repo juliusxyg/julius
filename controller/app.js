@@ -24,6 +24,7 @@ app.post('/img',site.uploadImg);
 
 app.listen(8081);
 
+//global functions
 Date.prototype.pattern=function(fmt) {        
     var o = {        
     "M+" : this.getMonth()+1, //月份        
@@ -57,6 +58,7 @@ Date.prototype.pattern=function(fmt) {
     }        
     return fmt;        
 }       
+//============end
 
 var users = {};
 
@@ -70,21 +72,30 @@ io.sockets.on('connection', function (socket) {
   		if(msg.pic){
   			output += '<br/><img src="/upload/'+msg.pic+'" />';
   		}
-  		io.sockets.emit('mymessage', output+'<br/>--> '+ (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") );
+  		io.sockets.in(socket.room).emit('mymessage', output+'<br/>--> '+ (new Date()).pattern("yyyy-MM-dd EE hh:mm:ss") );
   	}
   });
 
-  socket.on('login',function(name){
-  	if(name){
-	  	socket.username = name;
-	  	users[name] = name;
-	  	io.sockets.emit('userlist',users);
+  socket.on('login',function(user){
+  	if(user){
+      socket.room = user.room;
+      socket.join(user.room);
+	  	socket.username = user.name;
+      if(!users[user.room]){
+        users[user.room]={};
+      }
+	  	users[user.room][user.name] = user.name;
+	  	io.sockets.in(socket.room).emit('userlist',users[user.room]);
     }
   });
 
 
   socket.on('disconnect',function(){
-    delete users[socket.username];
-    io.sockets.emit('userlist',users);
+    delete users[socket.room][socket.username];
+    socket.leave(socket.room);
+    io.sockets.in(socket.room).emit('userlist',users[socket.room]);
+    if(!users[socket.room]){
+      delete users[socket.room];
+    }
   });
 });
