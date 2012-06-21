@@ -14,7 +14,11 @@ exports.error = function(req,res){
 exports.createTable = function(req,res){
 	var db = new sqlite3.Database(databasename);
 	db.serialize(function() {
+	//user table for chat room
 	  db.run("CREATE TABLE IF NOT EXISTS user (name TEXT, email TEXT, mobile INTEGER, dateline INTEGER)");
+	//article table for cms
+	  db.run("CREATE TABLE IF NOT EXISTS article (title TEXT, body TEXT, author TEXT, dateline INTEGER)");
+
 	  res.send('ok! finished');
 	});
 	db.close();
@@ -66,6 +70,24 @@ exports.listUser = function(req,res){
 	db.close();
 }
 
+exports.listArticle = function(req,res){
+	var db = new sqlite3.Database(databasename);
+	var list = new Array();
+	var tmp = '';
+	db.serialize(function() {
+		db.each("SELECT rowid AS id, title, body, author, dateline FROM article", function(err, row) {
+	      if(row){
+		      tmp = row.id + ": " + unescape(row.title) + " - " + unescape(row.body) + " - " + unescape(row.author) + " - " + new Date(row.dateline);
+		      list.push(tmp);
+	  		}
+	  	},
+	  	function(){
+	  		res.render('article_list',{articles: list, htmltitle: 'articlelist'});
+	  	});
+	});
+	db.close();
+}
+
 exports.loginIndex = function(req,res){
 	res.render('login',{htmltitle: 'login'});
 }
@@ -106,5 +128,31 @@ exports.uploadImg = function(req,res){
 		}
 		res.send('<script>window.parent.myimg("'+escape(req.files.img.name)+'");</script>');
 	});
+}
+
+exports.backendDispatcher = function(req,res){
+	if(req.params.op == 'article'){
+		res.render('article_add',{htmltitle: 'add article'});
+	}else if(req.params.op == 'createarticle'){
+		if(req.body.title && req.body.content){
+			var db = new sqlite3.Database(databasename);
+			var title = escape(req.body.title),
+				content = escape(req.body.content),
+				author = 'system',
+				dateline = new Date().getTime();
+			db.serialize(function() {
+			  var stmt = db.prepare("INSERT INTO article VALUES (?,?,?,?)");
+			  stmt.run([title,content,author,dateline]);
+			  stmt.finalize();
+			  res.redirect('/articles');
+			});
+
+			db.close();
+		}else{
+			res.render('Illegal Opeation');
+		}
+	}else{
+		res.send("Error parameter");
+	}
 }
 

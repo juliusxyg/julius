@@ -1,0 +1,8 @@
+<p>article number: <%- articles.length %></p>
+<% if(articles){ %>
+	<ul>
+		<% for(var i=0;i<articles.length;i++){ %>
+			<li><%= articles[i] %></li>
+		<% } %>
+	</ul>
+<% } %>

@@ -22,9 +22,13 @@ app.get('/list',site.listUser);
 app.get('/login',site.loginIndex);
 app.post('/chat',site.loginAction);
 app.post('/img',site.uploadImg);
+app.get('/backend/:op',site.backendDispatcher);
+app.post('/backend/:op',site.backendDispatcher);
+app.get('/articles',site.listArticle);
 
 app.listen(8081);
 
+//chat room
 var users = {};
 var chatlogfile = 'chat_history_log_'+ common.dateFormat("yyyy-MM-dd") +'.log';
 
