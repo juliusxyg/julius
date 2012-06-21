@@ -32,3 +32,17 @@ exports.dateFormat = function(fmt) {
     }        
     return fmt;        
 }
+
+exports.writeLog = function(fname,content){
+    var fs = require('fs');
+    fs.open('./log/'+fname, 'a', 0666, function(err,fd){
+        if(err){
+            throw err;
+        }
+        var c = content+"\r\n";
+        fs.write(fd, c, null, 'utf8', function(e){
+            if(e) throw e;
+            fs.closeSync(fd);
+        });
+    });
+}

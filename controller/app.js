@@ -26,6 +26,7 @@ app.post('/img',site.uploadImg);
 app.listen(8081);
 
 var users = {};
+var chatlogfile = 'chat_history_log_'+ common.dateFormat("yyyy-MM-dd") +'.log';
 
 io.sockets.on('connection', function (socket) {
   socket.on('mymessage',function(msg){
@@ -38,6 +39,8 @@ io.sockets.on('connection', function (socket) {
   			output += '<br/><img src="/upload/'+msg.pic+'" />';
   		}
   		io.sockets.in(socket.room).emit('mymessage', output+'<br/>--> '+ common.dateFormat("yyyy-MM-dd EE hh:mm:ss") );
+      //log history
+      common.writeLog(chatlogfile, common.dateFormat("yyyy-MM-dd EE hh:mm:ss") + "###" +socket.username + "###" + (msg.msg?msg.msg:'') + "###" + (msg.pic?msg.pic:'') + "###");
   	}
   });
 
