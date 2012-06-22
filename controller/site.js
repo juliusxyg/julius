@@ -1,6 +1,7 @@
 var sqlite3 = require('sqlite3').verbose();
 var databasename = 'database.db';
 var fs = require('fs');
+var common = require('./common.js');
 
 exports.index = function(req,res){
 	var tplParam = {htmltitle: 'layout title'};
@@ -72,19 +73,37 @@ exports.listUser = function(req,res){
 
 exports.listArticle = function(req,res){
 	var db = new sqlite3.Database(databasename);
-	var list = new Array();
-	var tmp = '';
-	db.serialize(function() {
-		db.each("SELECT rowid AS id, title, body, author, dateline FROM article", function(err, row) {
-	      if(row){
-		      tmp = row.id + ": " + unescape(row.title) + " - " + unescape(row.body) + " - " + unescape(row.author) + " - " + new Date(row.dateline);
-		      list.push(tmp);
-	  		}
-	  	},
-	  	function(){
-	  		res.render('article_list',{articles: list, htmltitle: 'articlelist'});
-	  	});
-	});
+	if(req.params.id){
+		db.serialize(function() {
+		  var stmt = db.prepare("SELECT rowid as id, title, body, author, dateline FROM article WHERE rowid=?");
+		  stmt.get(req.params.id,function(err, row){
+		  	if(row){
+		  		row.body = unescape(row.body);
+		  		row.title = unescape(row.title);
+		  		row.author = unescape(row.author);
+		  		row.dateline = common.dateFormat("yyyy-MM-dd EE hh:mm:ss",row.dateline);
+				res.render('article',{htmltitle: 'chat', article: row});
+		  	}else{
+		  		res.send('no article');
+		  	}
+		  });
+		  stmt.finalize();
+		});
+	}else{
+		var list = new Array();
+		var tmp = '';
+		db.serialize(function() {
+			db.each("SELECT rowid AS id, title, body, author, dateline FROM article", function(err, row) {
+		      if(row){
+			      tmp = row.id + ": " + unescape(row.title) + " - " + unescape(row.body) + " - " + unescape(row.author) + " - " + new Date(row.dateline);
+			      list.push(tmp);
+		  		}
+		  	},
+		  	function(){
+		  		res.render('article_list',{articles: list, htmltitle: 'articlelist'});
+		  	});
+		});
+	}
 	db.close();
 }
 

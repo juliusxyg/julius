@@ -1,5 +1,5 @@
-exports.dateFormat = function(fmt) {    
-	var now = new Date();    
+exports.dateFormat = function(fmt,timeline) {    
+	var now = timeline? new Date(timeline) : new Date();    
     var o = {        
     "M+" : now.getMonth()+1, //月份        
     "d+" : now.getDate(), //日        

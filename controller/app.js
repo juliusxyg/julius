@@ -24,7 +24,7 @@ app.post('/chat',site.loginAction);
 app.post('/img',site.uploadImg);
 app.get('/backend/:op',site.backendDispatcher);
 app.post('/backend/:op',site.backendDispatcher);
-app.get('/articles',site.listArticle);
+app.get('/articles/:id?',site.listArticle);
 
 app.listen(8081);
 
